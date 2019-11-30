@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">QQ Stickers</string>
+    <string name="button_download">Download</string>
+    <string name="button_favorite">Favorite</string>
+    <string name="button_open_link">Open link</string>
+    <string name="indicator_emid">Emotion ID</string>
+    <string name="title_favorites">My favorites</string>
+    <string name="label_show_true">Visible</string>
+    <string name="label_show_false">Hidden</string>
+    <string name="label_fee_free">Free</string>
+    <string name="label_fee_restricted">Restricted</string>
+    <string name="button_delete">Delete</string>
+    <string name="label_tag">Tag: %s</string>
+    <string name="msg_error_connection">Cannot fetch info:\n%s</string>
+    <string name="msg_exception">Exception:\n%s</string>
+    <string name="button_previous">Previous</string>
+    <string name="button_next">Next</string>
+    <string name="indicator_emtitle">Title of this emotion set</string>
+    <string name="label_real_size">%s (%d bytes)</string>
+    <string name="button_unfavorite">Added to fav.</string>
+</resources>

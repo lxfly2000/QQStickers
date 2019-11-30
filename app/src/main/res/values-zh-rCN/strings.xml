@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QQ表情浏览器</string>
+    <string name="button_download">下载</string>
+    <string name="button_favorite">收藏</string>
+    <string name="button_open_link">打开链接</string>
+    <string name="indicator_emid">表情ID</string>
+    <string name="title_favorites">收藏列表</string>
+    <string name="label_show_true">公开</string>
+    <string name="label_show_false">隐藏</string>
+    <string name="label_fee_free">免费</string>
+    <string name="label_fee_restricted">受限</string>
+    <string name="button_delete">删除</string>
+    <string name="label_tag">标签：%s</string>
+    <string name="msg_error_connection">无法获取信息：\n%s</string>
+    <string name="msg_exception">发生异常：\n%s</string>
+    <string name="button_previous">上一个</string>
+    <string name="button_next">下一个</string>
+    <string name="indicator_emtitle">表情名称</string>
+    <string name="label_real_size">%s（%d字节）</string>
+    <string name="button_unfavorite">已收藏</string>
+</resources>
