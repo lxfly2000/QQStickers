@@ -12,7 +12,7 @@
     <string name="label_fee_restricted">受限</string>
     <string name="button_delete">删除</string>
     <string name="label_tag">标签：%s</string>
-    <string name="msg_error_connection">无法获取信息：\n%s</string>
+    <string name="msg_error_fail">无法获取信息。</string>
     <string name="msg_exception">发生异常：\n%s</string>
     <string name="button_previous">上一个</string>
     <string name="button_next">下一个</string>

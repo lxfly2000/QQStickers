@@ -11,7 +11,7 @@
     <string name="label_fee_restricted">Restricted</string>
     <string name="button_delete">Delete</string>
     <string name="label_tag">Tag: %s</string>
-    <string name="msg_error_connection">Cannot fetch info:\n%s</string>
+    <string name="msg_error_fail">Cannot fetch information.</string>
     <string name="msg_exception">Exception:\n%s</string>
     <string name="button_previous">Previous</string>
     <string name="button_next">Next</string>

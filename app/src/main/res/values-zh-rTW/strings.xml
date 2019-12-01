@@ -12,7 +12,7 @@
     <string name="label_fee_restricted">受限</string>
     <string name="button_delete">刪除</string>
     <string name="label_tag">標籤：%s</string>
-    <string name="msg_error_connection">無法獲取數據：\n%s</string>
+    <string name="msg_error_fail">無法獲取數據。</string>
     <string name="msg_exception">發生異常：\n%s</string>
     <string name="button_previous">上一個</string>
     <string name="button_next">下一個</string>
