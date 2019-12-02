@@ -129,10 +129,14 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     String downloadUrl = String.format("https://imgcache.qq.com/qqshow/admindata/comdata/vipEmoji_item_%d/%s",
                             lastSuccessNavigateId, json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("zip"));
-                    AndroidSysDownload sysDownload=new AndroidSysDownload(getBaseContext());
                     String fileName=String.format("%d_%s.zip",lastSuccessNavigateId,
                             json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("name"));
                     String savePath=getExternalFilesDir("download").getPath()+"/"+fileName;
+                    if(FileUtility.IsFileExists(savePath)){
+                        AndroidUtility.MessageBox(MainActivity.this,getString(R.string.msg_file_exists,savePath),buttonDownload.getText().toString());
+                        return;
+                    }
+                    AndroidSysDownload sysDownload=new AndroidSysDownload(getBaseContext());
                     sysDownload.StartDownloadFile(downloadUrl,savePath,fileName,savePath);
                 }catch (JSONException e){
                     ReportException(e,true);

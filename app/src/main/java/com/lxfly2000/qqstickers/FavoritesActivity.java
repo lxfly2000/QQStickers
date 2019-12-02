@@ -61,10 +61,11 @@ public class FavoritesActivity extends AppCompatActivity {
                 ImageView imageView=(ImageView)view;
                 if(o instanceof Bitmap){
                     imageView.setImageBitmap((Bitmap)o);
+                    return true;
                 }else if(o instanceof Drawable){
                     imageView.setImageDrawable((Drawable)o);
+                    return true;
                 }
-                return true;
             }
             return false;
         }
@@ -79,8 +80,8 @@ public class FavoritesActivity extends AppCompatActivity {
         favoriteItems=new ArrayList<>();
         listFavorites=findViewById(R.id.listFavorites);
         adapter=new SimpleAdapter(this,favoriteItems,R.layout.favorite_item,
-                new String[]{FavoriteItem.keyImg,FavoriteItem.keyEmid,FavoriteItem.keyName},
-                new int[]{R.id.imageEmotion,R.id.imageEmotion,R.id.textEmotionTitle});
+                new String[]{FavoriteItem.keyImg,FavoriteItem.keyName},
+                new int[]{R.id.imageEmotion,R.id.textEmotionTitle});
         adapter.setViewBinder(listBinder);
         listFavorites.setAdapter(adapter);
 
@@ -130,9 +131,8 @@ public class FavoritesActivity extends AppCompatActivity {
             if(i>=0&&i<top||i>bottom&&i<listFavorites.getCount()){
                 HashMap<String,Object>item=(HashMap)adapter.getItem(i);
                 if(item.get(FavoriteItem.keyImg)instanceof Bitmap){
-                    //((Bitmap)item.get(FavoriteItem.keyImg)).recycle();
-                    //item.remove(FavoriteItem.keyImg);
-                    item.put(FavoriteItem.keyImg,getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
+                    ((Bitmap)item.get(FavoriteItem.keyImg)).recycle();
+                    item.remove(FavoriteItem.keyImg);
                 }
             }
         }

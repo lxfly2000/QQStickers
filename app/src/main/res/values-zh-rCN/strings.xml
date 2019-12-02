@@ -23,4 +23,5 @@
     <string name="label_version">版本：%s\n发布日期：%s</string>
     <string name="label_author">制作：lxfly2000</string>
     <string name="label_view_github_repo">前往本APP的GitHub</string>
+    <string name="msg_file_exists">下列文件已经存在：\n%s\n\n如果要重新下载，请先删除该文件。</string>
 </resources>
