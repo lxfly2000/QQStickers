@@ -18,4 +18,8 @@
     <string name="indicator_emtitle">Title of this emotion set</string>
     <string name="label_real_size">%s (%d bytes)</string>
     <string name="button_unfavorite">Added to fav.</string>
+    <string name="title_about">About</string>
+    <string name="label_version">Version: %s\nRelease date: %s</string>
+    <string name="label_author">Made by: lxfly2000</string>
+    <string name="label_view_github_repo">Go to this app\'s GitHub Repository</string>
 </resources>

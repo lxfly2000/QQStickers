@@ -45,8 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.menu_favorites)
-            startActivityForResult(new Intent(this,FavoritesActivity.class),FavoritesActivity.REQUEST_CHOOSE);
+        switch (item.getItemId()) {
+            case R.id.menu_favorites:
+                startActivityForResult(new Intent(this, FavoritesActivity.class), FavoritesActivity.REQUEST_CHOOSE);
+                break;
+            case R.id.menu_about:
+                startActivity(new Intent(this,AboutActivity.class));
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -168,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                editEmId.setError(null);
                 if(charSequence.length()>0)
                     NavigateEmId(Integer.parseInt(charSequence.toString()));
             }
@@ -228,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 try{
                     lastSuccessNavigateId=id;
-                    editEmId.setError(null);
                     ShowJson(StreamUtility.GetStringFromStream(stream,false));
                 }catch (IOException e){
                     ReportException(e,false);

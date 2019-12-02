@@ -15,7 +15,7 @@ public class FavoritesDB extends SQLiteOpenHelper {
     static final String keyPrimary="emid",keyName="name";
 
     public FavoritesDB(Context context) {
-        super(context, fileNameDB, null, 1);
+        super(context, context.getExternalFilesDir(null)+"/"+fileNameDB, null, 1);
     }
 
     public void Add(int id, String name, String path, ByteArrayInputStream stream){

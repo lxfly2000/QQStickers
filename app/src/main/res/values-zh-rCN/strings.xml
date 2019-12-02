@@ -19,4 +19,8 @@
     <string name="indicator_emtitle">表情名称</string>
     <string name="label_real_size">%s（%d字节）</string>
     <string name="button_unfavorite">已收藏</string>
+    <string name="title_about">关于</string>
+    <string name="label_version">版本：%s\n发布日期：%s</string>
+    <string name="label_author">制作：lxfly2000</string>
+    <string name="label_view_github_repo">前往本APP的GitHub</string>
 </resources>

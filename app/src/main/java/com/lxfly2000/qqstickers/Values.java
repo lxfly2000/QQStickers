@@ -13,4 +13,6 @@ public class Values {
     public static String GetIconPath(Context context,int emid){
         return context.getExternalFilesDir(Values.typeFavorite).getPath()+"/"+emid+".png";
     }
+    public static final String urlAuthor="https://github.com/lxfly2000/QQStickers";
+    public static final String urlAuthorGithubHome="https://github.com/lxfly2000";
 }

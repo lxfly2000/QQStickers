@@ -72,8 +72,10 @@ public class FavoritesActivity extends AppCompatActivity {
 
     FavoritesDB favoritesDB=null;
     SimpleAdapter adapter=null;
+    String activityTitle;
 
     void Init(){
+        activityTitle=getTitle().toString();
         favoriteItems=new ArrayList<>();
         listFavorites=findViewById(R.id.listFavorites);
         adapter=new SimpleAdapter(this,favoriteItems,R.layout.favorite_item,
@@ -115,6 +117,7 @@ public class FavoritesActivity extends AppCompatActivity {
             int emid=c.getInt(c.getColumnIndex(FavoritesDB.keyPrimary));
             favoriteItems.add(new FavoriteItem(null,emid,emid+" "+c.getString(c.getColumnIndex(FavoritesDB.keyName))));
         }
+        setTitle(activityTitle+" ("+c.getCount()+")");
         c.close();
         adapter.notifyDataSetChanged();
     }
