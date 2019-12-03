@@ -257,7 +257,10 @@ public class MainActivity extends AppCompatActivity {
             json=new JSONObject(strData);
             toggleFavorite.setChecked(favoritesDB.Find(lastSuccessNavigateId));
             editTitle.setText(json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("name"));
-            int realSize=json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getInt("realSize");
+            int realSize=0;
+            try{
+                realSize=json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getInt("realSize");
+            }catch (JSONException e){/*Nothing*/}
             textRealSize.setText(getString(R.string.label_real_size,GetSizeString(realSize),realSize));
             boolean isShow=json.getJSONObject("data").getJSONArray("operationInfo").getJSONObject(0).getInt("isShow")!=0;
             if(isShow){
