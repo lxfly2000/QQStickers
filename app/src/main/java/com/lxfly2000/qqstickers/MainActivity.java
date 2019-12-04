@@ -108,6 +108,16 @@ public class MainActivity extends AppCompatActivity {
     FavoritesDB favoritesDB;
 
     void InitApp(){
+        preferences=Values.GetPreference(this);
+        long t=System.currentTimeMillis();
+        if(preferences.getLong("first_use",Long.MAX_VALUE)>t){
+            preferences.edit().putLong("first_use",t).apply();
+            try {
+                FileUtility.WriteStreamToFile(FavoritesDB.GetDBPath(this), getAssets().open("QQStickers.db"));
+            }catch (IOException e){
+                ReportException(e,true);
+            }
+        }
         favoritesDB=new FavoritesDB(this);
         gridEmList=findViewById(R.id.gridEmotions);
         imageIcon=findViewById(R.id.imageEmotionIcon);
@@ -214,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
     static final int vdLastEmId=11449;
 
     void LoadLastEmId(){
-        preferences=Values.GetPreference(this);
         lastSuccessNavigateId=preferences.getInt(keyLastEmId,vdLastEmId);
         editEmId.setText(String.valueOf(lastSuccessNavigateId));
     }

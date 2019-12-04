@@ -14,8 +14,12 @@ public class FavoritesDB extends SQLiteOpenHelper {
     private static final String tableName="Favorites";
     static final String keyPrimary="emid",keyName="name";
 
+    public static String GetDBPath(Context context){
+        return context.getExternalFilesDir(null)+"/"+fileNameDB;
+    }
+
     public FavoritesDB(Context context) {
-        super(context, context.getExternalFilesDir(null)+"/"+fileNameDB, null, 1);
+        super(context, GetDBPath(context), null, 1);
     }
 
     public void Add(int id, String name, String path, ByteArrayInputStream stream){
