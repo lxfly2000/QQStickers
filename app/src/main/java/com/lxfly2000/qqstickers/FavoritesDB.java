@@ -61,6 +61,12 @@ public class FavoritesDB extends SQLiteOpenHelper {
         return getReadableDatabase().query(tableName,new String[]{keyPrimary,keyName},null,null,null,null,keyPrimary);
     }
 
+    public Cursor QueryWithString(String q){
+        //https://blog.csdn.net/fantianheyey/article/details/9199235
+        return getReadableDatabase().query(tableName,new String[]{keyPrimary,keyName},
+                keyName+" like ?",new String[]{"%"+q+"%"},null,null,keyPrimary);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("Create Table "+tableName+"("+keyPrimary+" Integer Default 11449 Not null Primary key,"+

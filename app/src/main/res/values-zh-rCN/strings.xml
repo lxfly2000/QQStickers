@@ -24,4 +24,5 @@
     <string name="label_author">制作：lxfly2000</string>
     <string name="label_view_github_repo">前往本APP的GitHub</string>
     <string name="msg_file_exists">下列文件已经存在：\n%s\n\n如果要重新下载，请先删除该文件。</string>
+    <string name="label_search_tip">输入表情名称……</string>
 </resources>

@@ -23,4 +23,5 @@
     <string name="label_author">Made by: lxfly2000</string>
     <string name="label_view_github_repo">Go to this app\'s GitHub Repository</string>
     <string name="msg_file_exists">File already exists:\n%s\n\nPlease delete this file before dowloading.</string>
+    <string name="label_search_tip">Enter the emotion title...</string>
 </resources>

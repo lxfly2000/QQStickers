@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -24,6 +25,27 @@ import java.util.HashMap;
 public class FavoritesActivity extends AppCompatActivity {
     static final int REQUEST_CHOOSE=1;
     ListView listFavorites;
+    SearchView searchView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.favorites_menu,menu);
+        searchView=(SearchView)menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                UpdateList(s);
+                return false;
+            }
+        });
+        searchView.setQueryHint(getString(R.string.label_search_tip));
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -113,7 +135,16 @@ public class FavoritesActivity extends AppCompatActivity {
         });
 
         favoritesDB=new FavoritesDB(this);
-        Cursor c=favoritesDB.QueryAll();
+        UpdateList("");
+    }
+
+    void UpdateList(String filter){
+        Cursor c;
+        if(filter.length()==0)
+            c=favoritesDB.QueryAll();
+        else
+            c=favoritesDB.QueryWithString(filter);
+        favoriteItems.clear();
         for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
             int emid=c.getInt(c.getColumnIndex(FavoritesDB.keyPrimary));
             favoriteItems.add(new FavoriteItem(null,emid,emid+" "+c.getString(c.getColumnIndex(FavoritesDB.keyName))));
@@ -121,6 +152,12 @@ public class FavoritesActivity extends AppCompatActivity {
         setTitle(activityTitle+" ("+c.getCount()+")");
         c.close();
         adapter.notifyDataSetChanged();
+        listFavorites.post(new Runnable() {
+            @Override
+            public void run() {
+                DisplayImagesVisible(listFavorites.getFirstVisiblePosition(),listFavorites.getLastVisiblePosition());
+            }
+        });
     }
 
     int lastTopItemIndex,lastBottomItemIndex;
@@ -132,6 +169,8 @@ public class FavoritesActivity extends AppCompatActivity {
                 HashMap<String,Object>item=(HashMap)adapter.getItem(i);
                 if(item.get(FavoriteItem.keyImg)instanceof Bitmap){
                     ((Bitmap)item.get(FavoriteItem.keyImg)).recycle();
+                    item.remove(FavoriteItem.keyImg);
+                }else if(item.get(FavoriteItem.keyImg)instanceof Drawable){
                     item.remove(FavoriteItem.keyImg);
                 }
             }
@@ -158,6 +197,8 @@ public class FavoritesActivity extends AppCompatActivity {
                             }else if(item.get(FavoriteItem.keyImg)instanceof Bitmap){
                                 ((Bitmap)item.get(FavoriteItem.keyImg)).recycle();
                                 item.remove(FavoriteItem.keyImg);
+                            }else if(item.get(FavoriteItem.keyImg)instanceof Drawable){
+                                item.remove(FavoriteItem.keyImg);
                             }
                         }
                     };
@@ -167,13 +208,22 @@ public class FavoritesActivity extends AppCompatActivity {
                         @Override
                         public void OnReturnStream(ByteArrayInputStream stream, boolean success, int response, Object extra, URLConnection connection) {
                             int index=(int)extra;
-                            if(success) {
-                                FileUtility.WriteStreamToFile(coverPath,stream);
-                                ((HashMap<String, Object>) adapter.getItem(index)).put(FavoriteItem.keyImg, BitmapFactory.decodeFile(coverPath));
-                            }else {
-                                ((HashMap<String,Object>)adapter.getItem(index)).put(FavoriteItem.keyImg,getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
-                            }
-                            adapter.notifyDataSetChanged();
+                            try {
+                                if (success) {
+                                    FileUtility.WriteStreamToFile(coverPath, stream);
+                                    item.put(FavoriteItem.keyImg, BitmapFactory.decodeFile(coverPath));
+                                } else {
+                                    item.put(FavoriteItem.keyImg, getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
+                                }
+                                if(index>=lastTopItemIndex&&index<=lastBottomItemIndex) {
+                                    adapter.notifyDataSetChanged();
+                                }else if(item.get(FavoriteItem.keyImg)instanceof Bitmap){
+                                    ((Bitmap)item.get(FavoriteItem.keyImg)).recycle();
+                                    item.remove(FavoriteItem.keyImg);
+                                }else if(item.get(FavoriteItem.keyImg)instanceof Drawable){
+                                    item.remove(FavoriteItem.keyImg);
+                                }
+                            }catch (IndexOutOfBoundsException e){/*Nothing*/}
                         }
                     };
                     task.SetExtra(i);
