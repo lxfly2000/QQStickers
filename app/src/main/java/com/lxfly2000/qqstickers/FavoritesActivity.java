@@ -151,8 +151,8 @@ public class FavoritesActivity extends AppCompatActivity {
         }
         setTitle(activityTitle+" ("+c.getCount()+")");
         c.close();
-        adapter.notifyDataSetChanged();
-        listFavorites.post(new Runnable() {
+        adapter.notifyDataSetChanged();//异步操作
+        listFavorites.post(new Runnable() {//用post保证异步操作的顺序
             @Override
             public void run() {
                 DisplayImagesVisible(listFavorites.getFirstVisiblePosition(),listFavorites.getLastVisiblePosition());
