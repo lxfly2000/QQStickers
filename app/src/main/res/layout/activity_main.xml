@@ -62,17 +62,17 @@
                 android:layout_height="wrap_content">
             <Button
                     android:text="@string/button_download"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content" android:id="@+id/buttonDownload"
                     android:layout_weight="1"/>
             <ToggleButton
                     android:text="@string/button_favorite"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content" android:id="@+id/toggleFavorite" android:layout_weight="1"
                     android:textOn="@string/button_unfavorite" android:textOff="@string/button_favorite"/>
             <Button
                     android:text="@string/button_open_link"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content" android:id="@+id/buttonOpenLink"
                     android:layout_weight="1"/>
         </LinearLayout>
