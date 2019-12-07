@@ -6,14 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import com.lxfly2000.utilities.AndroidDownloadFileTask;
 import com.lxfly2000.utilities.FileUtility;
 
@@ -76,21 +75,18 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     ArrayList<FavoriteItem>favoriteItems;
-    SimpleAdapter.ViewBinder listBinder=new SimpleAdapter.ViewBinder() {
-        @Override
-        public boolean setViewValue(View view, Object o, String s) {
-            if(view instanceof ImageView){
-                ImageView imageView=(ImageView)view;
-                if(o instanceof Bitmap){
-                    imageView.setImageBitmap((Bitmap)o);
-                    return true;
-                }else if(o instanceof Drawable){
-                    imageView.setImageDrawable((Drawable)o);
-                    return true;
-                }
+    SimpleAdapter.ViewBinder listBinder= (view, o, s) -> {
+        if(view instanceof ImageView){
+            ImageView imageView=(ImageView)view;
+            if(o instanceof Bitmap){
+                imageView.setImageBitmap((Bitmap)o);
+                return true;
+            }else if(o instanceof Drawable){
+                imageView.setImageDrawable((Drawable)o);
+                return true;
             }
-            return false;
         }
+        return false;
     };
 
     FavoritesDB favoritesDB=null;
@@ -107,15 +103,12 @@ public class FavoritesActivity extends AppCompatActivity {
         adapter.setViewBinder(listBinder);
         listFavorites.setAdapter(adapter);
 
-        listFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent=new Intent();
-                FavoriteItem item=favoriteItems.get(i);
-                intent.putExtra(FavoritesDB.keyPrimary,(int)item.get(FavoriteItem.keyEmid));
-                setResult(RESULT_OK,intent);
-                finish();
-            }
+        listFavorites.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent=new Intent();
+            FavoriteItem item=favoriteItems.get(i);
+            intent.putExtra(FavoritesDB.keyPrimary,(int)item.get(FavoriteItem.keyEmid));
+            setResult(RESULT_OK,intent);
+            finish();
         });
 
         listFavorites.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -152,12 +145,7 @@ public class FavoritesActivity extends AppCompatActivity {
         setTitle(activityTitle+" ("+c.getCount()+")");
         c.close();
         adapter.notifyDataSetChanged();//异步操作
-        listFavorites.post(new Runnable() {//用post保证异步操作的顺序
-            @Override
-            public void run() {
-                DisplayImagesVisible(listFavorites.getFirstVisiblePosition(),listFavorites.getLastVisiblePosition());
-            }
-        });
+        listFavorites.post(() -> DisplayImagesVisible(listFavorites.getFirstVisiblePosition(),listFavorites.getLastVisiblePosition()));//用post保证异步操作的顺序
     }
 
     int lastTopItemIndex,lastBottomItemIndex;

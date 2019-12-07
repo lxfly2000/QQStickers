@@ -16,12 +16,7 @@ public class AndroidUtility {
             new AlertDialog.Builder(activity)
                     .setMessage(deniedMessage)
                     .setPositiveButton(android.R.string.ok,null)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            activity.finish();
-                        }
-                    }).show();
+                    .setOnDismissListener(dialogInterface -> activity.finish()).show();
             return false;
         }
         return true;

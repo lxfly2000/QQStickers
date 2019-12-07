@@ -92,18 +92,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     ArrayList<EmotionItem>emItems=null;
-    SimpleAdapter.ViewBinder emItemsViewBinder=new SimpleAdapter.ViewBinder() {
-        @Override
-        public boolean setViewValue(View view, Object o, String s) {
-            if(o instanceof Bitmap) {
-                ((ImageView)view).setImageBitmap((Bitmap)o);
-            }else if(o instanceof Drawable){
-                ((ImageView)view).setImageDrawable((Drawable)o);
-            }else if(o instanceof String){
-                ((TextView)view).setText((String)o);
-            }
-            return true;
+    SimpleAdapter.ViewBinder emItemsViewBinder= (view, o, s) -> {
+        if(o instanceof Bitmap) {
+            ((ImageView)view).setImageBitmap((Bitmap)o);
+        }else if(o instanceof Drawable){
+            ((ImageView)view).setImageDrawable((Drawable)o);
+        }else if(o instanceof String){
+            ((TextView)view).setText((String)o);
         }
+        return true;
     };
     FavoritesDB favoritesDB;
 
@@ -133,51 +130,41 @@ public class MainActivity extends AppCompatActivity {
         buttonOpenLink=findViewById(R.id.buttonOpenLink);
         buttonPrevious=findViewById(R.id.buttonPrevious);
         buttonNext=findViewById(R.id.buttonNext);
-        buttonDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    String downloadUrl = String.format("https://imgcache.qq.com/qqshow/admindata/comdata/vipEmoji_item_%d/%s",
-                            lastSuccessNavigateId, json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("zip"));
-                    String fileName=String.format("%d_%s.zip",lastSuccessNavigateId,
-                            json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("name"));
-                    String savePath=getExternalFilesDir("download").getPath()+"/"+fileName;
-                    if(FileUtility.IsFileExists(savePath)){
-                        AndroidUtility.MessageBox(MainActivity.this,getString(R.string.msg_file_exists,savePath),buttonDownload.getText().toString());
-                        return;
-                    }
-                    AndroidSysDownload sysDownload=new AndroidSysDownload(getBaseContext());
-                    sysDownload.StartDownloadFile(downloadUrl,savePath,fileName,savePath);
-                }catch (JSONException e){
-                    ReportException(e,true);
+        buttonDownload.setOnClickListener(view -> {
+            try {
+                String downloadUrl = String.format("https://imgcache.qq.com/qqshow/admindata/comdata/vipEmoji_item_%d/%s",
+                        lastSuccessNavigateId, json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("zip"));
+                String fileName=String.format("%d_%s.zip",lastSuccessNavigateId,
+                        json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("name"));
+                String savePath=getExternalFilesDir("download").getPath()+"/"+fileName;
+                if(FileUtility.IsFileExists(savePath)){
+                    AndroidUtility.MessageBox(MainActivity.this,getString(R.string.msg_file_exists,savePath),buttonDownload.getText().toString());
+                    return;
                 }
+                AndroidSysDownload sysDownload=new AndroidSysDownload(getBaseContext());
+                sysDownload.StartDownloadFile(downloadUrl,savePath,fileName,savePath);
+            }catch (JSONException e){
+                ReportException(e,true);
+            }catch (NullPointerException e){
+                ReportException(e,true);
             }
         });
-        buttonOpenLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url="https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d";
-                AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
+        buttonOpenLink.setOnClickListener(view -> {
+            String url="https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d";
+            AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
+        });
+        buttonPrevious.setOnClickListener(view -> {
+            if(editEmId.length()>0) {
+                int id = Integer.parseInt(editEmId.getText().toString());
+                id = Math.max(0, id - 1);
+                editEmId.setText(String.valueOf(id));
             }
         });
-        buttonPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(editEmId.length()>0) {
-                    int id = Integer.parseInt(editEmId.getText().toString());
-                    id = Math.max(0, id - 1);
-                    editEmId.setText(String.valueOf(id));
-                }
-            }
-        });
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(editEmId.length()>0) {
-                    int id = Integer.parseInt(editEmId.getText().toString());
-                    id = Math.min(Integer.MAX_VALUE, id + 1);
-                    editEmId.setText(String.valueOf(id));
-                }
+        buttonNext.setOnClickListener(view -> {
+            if(editEmId.length()>0) {
+                int id = Integer.parseInt(editEmId.getText().toString());
+                id = Math.min(Integer.MAX_VALUE, id + 1);
+                editEmId.setText(String.valueOf(id));
             }
         });
         editEmId.addTextChangedListener(new TextWatcher() {
@@ -198,15 +185,16 @@ public class MainActivity extends AppCompatActivity {
                 //Nothing
             }
         });
-        toggleFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String iconPath=Values.GetIconPath(getBaseContext(),lastSuccessNavigateId);
-                if(((ToggleButton)view).isChecked()){
-                    favoritesDB.Add(lastSuccessNavigateId,editTitle.getText().toString(),iconPath,lastIconStream);
-                }else{
-                    favoritesDB.Delete(lastSuccessNavigateId,iconPath);
+        toggleFavorite.setOnClickListener(view -> {
+            String iconPath=Values.GetIconPath(getBaseContext(),lastSuccessNavigateId);
+            try {
+                if (((ToggleButton) view).isChecked()) {
+                    favoritesDB.Add(lastSuccessNavigateId, editTitle.getText().toString(), iconPath, lastIconStream);
+                } else {
+                    favoritesDB.Delete(lastSuccessNavigateId, iconPath);
                 }
+            }catch (NullPointerException e){
+                ReportException(e,true);
             }
         });
         emItems=new ArrayList<>();

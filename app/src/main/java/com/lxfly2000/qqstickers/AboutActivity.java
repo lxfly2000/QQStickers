@@ -32,7 +32,7 @@ public class AboutActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
 
         ((TextView)findViewById(R.id.textVersionInfo)).setText(getString(R.string.label_version,BuildConfig.VERSION_NAME,BuildConfig.BUILD_DATE));
-        SetTextViewWithURL((TextView)findViewById(R.id.textViewGotoGithub),Values.urlAuthor);
-        SetTextViewWithURL((TextView) findViewById(R.id.textViewMadeBy),Values.urlAuthorGithubHome);
+        SetTextViewWithURL(findViewById(R.id.textViewGotoGithub),Values.urlAuthor);
+        SetTextViewWithURL(findViewById(R.id.textViewMadeBy),Values.urlAuthorGithubHome);
     }
 }
