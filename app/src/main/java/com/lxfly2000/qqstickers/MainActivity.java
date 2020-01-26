@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonOpenLink.setOnClickListener(view -> {
-            String url="https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d";
+            String url="https://zb.vip.qq.com/hybrid/emoticonmall/detail?id=%d";
             AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
         });
         buttonPrevious.setOnClickListener(view -> {
