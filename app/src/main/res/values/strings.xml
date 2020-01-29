@@ -24,4 +24,10 @@
     <string name="label_view_github_repo">Go to this app\'s GitHub Repository</string>
     <string name="msg_file_exists">File already exists:\n%s\n\nPlease delete this file before dowloading.</string>
     <string name="label_search_tip">Enter the emotion title...</string>
+    <string name="menu_check_update">Check Update</string>
+    <string name="message_new_version">Found new version, update?\nCurrent: %s\nNew: %s</string>
+    <string name="button_skip_new_version">Skip this version</string>
+    <string name="error_check_update">Cannot check update.</string>
+    <string name="message_no_update">No update.</string>
+    <string name="error_permission_network">No network permission.</string>
 </resources>

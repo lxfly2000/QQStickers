@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapter.setViewBinder(emItemsViewBinder);
         gridEmList.setAdapter(listAdapter);
         LoadLastEmId();
+        new UpdateChecker(this).CheckForUpdate(true);
     }
 
     SharedPreferences preferences;

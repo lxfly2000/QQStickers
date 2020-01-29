@@ -15,4 +15,12 @@ public class Values {
     }
     public static final String urlAuthor="https://github.com/lxfly2000/QQStickers";
     public static final String urlAuthorGithubHome="https://github.com/lxfly2000";
+    public static String GetCheckUpdateURL(){
+        return urlAuthor+"/raw/master/app/build.gradle";
+    }
+    public static final String keySkippedVersionCode="skip_ver_code";
+    public static final int vDefaultSkippedVersionCode=0;
+    public static final String GetNewReleaseURL(){
+        return urlAuthor+"/releases";
+    }
 }

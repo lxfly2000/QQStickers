@@ -25,4 +25,10 @@
     <string name="label_view_github_repo">訪問本APP的GitHub</string>
     <string name="msg_file_exists">下列檔案已經存在：\n%s\n\n請先刪除該檔案後再繼續。</string>
     <string name="label_search_tip">輸入表情名稱…</string>
+    <string name="menu_check_update">檢查更新</string>
+    <string name="message_new_version">發現新版本，是否更新？\n當前版本：%s\n新版本：%s</string>
+    <string name="button_skip_new_version">不再提示這個版本</string>
+    <string name="error_check_update">無法檢查更新，可能是網路有問題或目標伺服器已移動。</string>
+    <string name="message_no_update">當前版本已是最新。</string>
+    <string name="error_permission_network">未獲取到網路訪問權，請檢查權限設定。</string>
 </resources>
