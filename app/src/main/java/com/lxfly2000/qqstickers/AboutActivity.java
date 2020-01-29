@@ -2,6 +2,7 @@ package com.lxfly2000.qqstickers;
 
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,8 +19,14 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==android.R.id.home)
-            finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_check_update:
+                new UpdateChecker(this).CheckForUpdate(false);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -34,5 +41,11 @@ public class AboutActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.textVersionInfo)).setText(getString(R.string.label_version,BuildConfig.VERSION_NAME,BuildConfig.BUILD_DATE));
         SetTextViewWithURL(findViewById(R.id.textViewGotoGithub),Values.urlAuthor);
         SetTextViewWithURL(findViewById(R.id.textViewMadeBy),Values.urlAuthorGithubHome);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_about,menu);
+        return true;
     }
 }

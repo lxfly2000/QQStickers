@@ -7,8 +7,8 @@ android {
         applicationId "com.lxfly2000.qqstickers"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 8
-        versionName "1.2"
+        versionCode 9
+        versionName "1.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "BUILD_DATE", "\"" + new Date().format("yyyy-M-d") + "\""
         vectorDrawables {
