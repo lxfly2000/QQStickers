@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.lxfly2000.utilities.*;
@@ -103,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     };
     FavoritesDB favoritesDB;
+    static String previewLinks[]={
+            "https://zb.vip.qq.com/hybrid/emoticonmall/detail?id=%d",
+            "https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d"
+    };
+    int usingPreviewLink=0;
 
     void InitApp(){
         preferences=Values.GetPreference(this);
@@ -150,8 +156,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonOpenLink.setOnClickListener(view -> {
-            String url="https://zb.vip.qq.com/hybrid/emoticonmall/detail?id=%d";
+            String url=previewLinks[usingPreviewLink];
             AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
+        });
+        usingPreviewLink=preferences.getInt("using_preview_link",0);
+        buttonOpenLink.setOnLongClickListener(view -> {
+            RadioGroup group=new RadioGroup(view.getContext());
+            for (int i=0;i<previewLinks.length;i++) {
+                RadioButton button = new RadioButton(group.getContext());
+                button.setText(previewLinks[i]);
+                button.setId(i);
+                group.addView(button);
+            }
+            group.check(usingPreviewLink);
+            AlertDialog dlg=new AlertDialog.Builder(view.getContext())
+                    .setTitle(R.string.button_open_link)
+                    .setView(group)
+                    .setPositiveButton(android.R.string.ok,(dialogInterface, i) -> {
+                        usingPreviewLink=group.getCheckedRadioButtonId();
+                        preferences.edit().putInt("using_preview_link",usingPreviewLink).apply();
+                    })
+                    .setNegativeButton(android.R.string.cancel,null)
+                    .show();
+            return true;
         });
         buttonPrevious.setOnClickListener(view -> {
             if(editEmId.length()>0) {
