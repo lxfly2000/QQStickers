@@ -17,11 +17,13 @@ android:
     - extra-android-m2repository
 
   licenses:
-    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-preview-license-52d11cd2'
     - 'android-sdk-license-.+'
 
 before_install:
   - chmod +x gradlew
+install:
+  - echo y | sdkmanager "build-tools;30.0.0"
 
 script:  
   - ./gradlew build
