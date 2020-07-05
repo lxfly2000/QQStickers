@@ -19,6 +19,7 @@ android:
   licenses:
     - 'android-sdk-preview-license-52d11cd2'
     - 'android-sdk-license-.+'
+    - 'build-tools.*'
 
 before_install:
   - chmod +x gradlew
