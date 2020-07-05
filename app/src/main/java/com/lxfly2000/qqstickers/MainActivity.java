@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             "https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d"
     };
     int usingPreviewLink=0;
+    boolean navigateOnlyFavorite=false;
 
     void InitApp(){
         preferences=Values.GetPreference(this);
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
         });
         usingPreviewLink=preferences.getInt("using_preview_link",0);
+        navigateOnlyFavorite=preferences.getBoolean("navigate_only_favorite",false);
         buttonOpenLink.setOnLongClickListener(view -> {
             RadioGroup group=new RadioGroup(view.getContext());
             for (int i=0;i<previewLinks.length;i++) {
@@ -183,17 +185,42 @@ public class MainActivity extends AppCompatActivity {
         buttonPrevious.setOnClickListener(view -> {
             if(editEmId.length()>0) {
                 int id = Integer.parseInt(editEmId.getText().toString());
-                id = Math.max(0, id - 1);
+                if(navigateOnlyFavorite)
+                    id=favoritesDB.FindPreviousID(id);
+                else
+                    id = Math.max(0, id - 1);
                 editEmId.setText(String.valueOf(id));
             }
         });
         buttonNext.setOnClickListener(view -> {
             if(editEmId.length()>0) {
                 int id = Integer.parseInt(editEmId.getText().toString());
-                id = Math.min(Integer.MAX_VALUE, id + 1);
+                if(navigateOnlyFavorite)
+                    id=favoritesDB.FindNextID(id);
+                else
+                    id = Math.min(Integer.MAX_VALUE, id + 1);
                 editEmId.setText(String.valueOf(id));
             }
         });
+        View.OnLongClickListener chooseOnlyFavoriteListener=view -> {
+            CheckBox boxOnlyFavorite=new CheckBox(view.getContext());
+            boxOnlyFavorite.setId(0);
+            boxOnlyFavorite.setText(R.string.check_navigate_only_favorite);
+            navigateOnlyFavorite=preferences.getBoolean("navigate_only_favorite",false);
+            boxOnlyFavorite.setChecked(navigateOnlyFavorite);
+            AlertDialog dlg=new AlertDialog.Builder(view.getContext())
+                    .setTitle(((Button)view).getText())
+                    .setView(boxOnlyFavorite)
+                    .setPositiveButton(android.R.string.ok,((dialogInterface, i) -> {
+                        navigateOnlyFavorite=boxOnlyFavorite.isChecked();
+                        preferences.edit().putBoolean("navigate_only_favorite",navigateOnlyFavorite).apply();
+                    }))
+                    .setNegativeButton(android.R.string.cancel,null)
+                    .show();
+            return true;
+        };
+        buttonPrevious.setOnLongClickListener(chooseOnlyFavoriteListener);
+        buttonNext.setOnLongClickListener(chooseOnlyFavoriteListener);
         editEmId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

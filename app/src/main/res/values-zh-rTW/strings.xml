@@ -31,4 +31,5 @@
     <string name="error_check_update">無法檢查更新，可能是網路有問題或目標伺服器已移動。</string>
     <string name="message_no_update">當前版本已是最新。</string>
     <string name="error_permission_network">未獲取到網路訪問權，請檢查權限設定。</string>
+    <string name="check_navigate_only_favorite">僅瀏覧我的最愛</string>
 </resources>

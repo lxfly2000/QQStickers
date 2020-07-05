@@ -49,6 +49,46 @@ public class FavoritesDB extends SQLiteOpenHelper {
         return count>0;
     }
 
+    public int FindNextID(int id){
+        //查找第一个大于ID的值即为所求，若无记录返回ID本身，若无符合条件的值则返回第一个ID
+        Cursor c=QueryAll();
+        if(c.getCount()==0){
+            return id;
+        }
+        c.moveToFirst();
+        int nextEmId=c.getInt(c.getColumnIndex(keyPrimary));
+        while (!c.isAfterLast()){
+            int emid=c.getInt(c.getColumnIndex(keyPrimary));
+            if(emid>id){
+                nextEmId=emid;
+                break;
+            }
+            c.moveToNext();
+        }
+        c.close();
+        return nextEmId;
+    }
+
+    public int FindPreviousID(int id){
+        //倒序查找，代码同上，只需把排序改为倒序，比较改为小于即可
+        Cursor c=getReadableDatabase().query(tableName,new String[]{keyPrimary,keyName},null,null,null,null,keyPrimary+" DESC");
+        if(c.getCount()==0){
+            return id;
+        }
+        c.moveToFirst();
+        int nextEmId=c.getInt(c.getColumnIndex(keyPrimary));
+        while(!c.isAfterLast()){
+            int emid=c.getInt(c.getColumnIndex(keyPrimary));
+            if(emid<id){
+                nextEmId=emid;
+                break;
+            }
+            c.moveToNext();
+        }
+        c.close();
+        return nextEmId;
+    }
+
     public String GetName(int id){
         Cursor c= getReadableDatabase().query(tableName,new String[]{keyPrimary,keyName},keyPrimary+"=?",new String[]{String.valueOf(id)},null,null,null);
         c.moveToFirst();

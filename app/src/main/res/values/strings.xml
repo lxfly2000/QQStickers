@@ -30,4 +30,5 @@
     <string name="error_check_update">Cannot check update.</string>
     <string name="message_no_update">No update.</string>
     <string name="error_permission_network">No network permission.</string>
+    <string name="check_navigate_only_favorite">Navigate only favorites</string>
 </resources>
