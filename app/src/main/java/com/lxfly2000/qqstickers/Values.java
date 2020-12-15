@@ -23,4 +23,7 @@ public class Values {
     public static final String GetNewReleaseURL(){
         return urlAuthor+"/releases";
     }
+    public static final int vDefaultLinkToOpen=0;
+    public static final boolean vDefaultNavigateFavoriteOnly=false;
+    public static final boolean vDefaultPreviewGifOnMainView=false;
 }

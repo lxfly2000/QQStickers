@@ -1,0 +1,18 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/link_to_open"
+            android:entryValues="@array/link_to_open"
+            android:key="@string/key_link_to_open"
+            android:title="@string/button_open_link"/>
+    <CheckBoxPreference
+            android:defaultValue="false"
+            android:title="@string/check_navigate_only_favorite"
+            android:key="@string/key_only_navigate_favorite"/>
+    <CheckBoxPreference
+            android:defaultValue="false"
+            android:title="@string/label_preview_gif_main_view" android:key="@string/key_preview_gif_on_main_view"/>
+
+</PreferenceScreen>

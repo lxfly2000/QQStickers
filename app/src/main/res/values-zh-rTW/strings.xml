@@ -32,4 +32,8 @@
     <string name="message_no_update">當前版本已是最新。</string>
     <string name="error_permission_network">未獲取到網路訪問權，請檢查權限設定。</string>
     <string name="check_navigate_only_favorite">僅瀏覧我的最愛</string>
+    <string name="menu_settings">設定</string>
+    <string name="label_preview_gif_main_view">在主螢幕中預覧GIF</string>
+    <string name="message_settings_saved">設定已保存。</string>
+    <string name="button_open_file">打開檔案</string>
 </resources>

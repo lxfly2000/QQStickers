@@ -1,0 +1,7 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="link_to_open">
+        <item>https://zb.vip.qq.com/hybrid/emoticonmall/detail?id=%d</item>
+        <item>https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d</item>
+    </string-array>
+</resources>

@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -16,7 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.lxfly2000.utilities.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,8 +45,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK&&data!=null){
+        if(requestCode==1&&resultCode==RESULT_OK&&data!=null){
             editEmId.setText(String.valueOf(data.getIntExtra(FavoritesDB.keyPrimary,lastSuccessNavigateId)));
+        }else if(requestCode==2&&resultCode==RESULT_OK){
+            if(data.getBooleanExtra(SettingsActivity.keyNeedReload,false))
+                NavigateEmId(GetEmId());
         }
     }
 
@@ -48,10 +57,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_favorites:
-                startActivityForResult(new Intent(this, FavoritesActivity.class), FavoritesActivity.REQUEST_CHOOSE);
+                startActivityForResult(new Intent(this, FavoritesActivity.class), 1);
                 break;
             case R.id.menu_about:
                 startActivity(new Intent(this,AboutActivity.class));
+                break;
+            case R.id.menu_settings:
+                startActivityForResult(new Intent(this,SettingsActivity.class),2);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -104,12 +116,18 @@ public class MainActivity extends AppCompatActivity {
         return true;
     };
     FavoritesDB favoritesDB;
-    static String previewLinks[]={
-            "https://zb.vip.qq.com/hybrid/emoticonmall/detail?id=%d",
-            "https://gxh.vip.qq.com/club/themes/mobile/bq/html/detail.html?id=%d"
-    };
-    int usingPreviewLink=0;
-    boolean navigateOnlyFavorite=false;
+    String[] GetPreviewLink(){
+        return getResources().getStringArray(R.array.link_to_open);
+    }
+    int GetUsingPreviewLink(){
+        return preferences.getInt(getString(R.string.key_link_to_open),Values.vDefaultLinkToOpen);
+    }
+    boolean IsNavigateOnlyFavorite(){
+        return preferences.getBoolean(getString(R.string.key_only_navigate_favorite),Values.vDefaultNavigateFavoriteOnly);
+    }
+    boolean IsPreviewGifOnMainView(){
+        return preferences.getBoolean(getString(R.string.key_preview_gif_on_main_view),Values.vDefaultPreviewGifOnMainView);
+    }
 
     void InitApp(){
         preferences=Values.GetPreference(this);
@@ -145,7 +163,12 @@ public class MainActivity extends AppCompatActivity {
                         json.getJSONObject("data").getJSONArray("baseInfo").getJSONObject(0).getString("name"));
                 String savePath=getExternalFilesDir("download").getPath()+"/"+fileName;
                 if(FileUtility.IsFileExists(savePath)){
-                    AndroidUtility.MessageBox(MainActivity.this,getString(R.string.msg_file_exists,savePath),buttonDownload.getText().toString());
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle(buttonDownload.getText())
+                            .setMessage(getString(R.string.msg_file_exists,savePath))
+                            .setPositiveButton(android.R.string.ok,null)
+                            .setNeutralButton(R.string.button_delete,(dialogInterface, i) -> FileUtility.DeleteFile(savePath))
+                            .show();
                     return;
                 }
                 AndroidSysDownload sysDownload=new AndroidSysDownload(getBaseContext());
@@ -157,35 +180,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonOpenLink.setOnClickListener(view -> {
-            String url=previewLinks[usingPreviewLink];
+            String url=GetPreviewLink()[GetUsingPreviewLink()];
             AndroidUtility.OpenUri(getBaseContext(),String.format(url,lastSuccessNavigateId));
-        });
-        usingPreviewLink=preferences.getInt("using_preview_link",0);
-        navigateOnlyFavorite=preferences.getBoolean("navigate_only_favorite",false);
-        buttonOpenLink.setOnLongClickListener(view -> {
-            RadioGroup group=new RadioGroup(view.getContext());
-            for (int i=0;i<previewLinks.length;i++) {
-                RadioButton button = new RadioButton(group.getContext());
-                button.setText(previewLinks[i]);
-                button.setId(i);
-                group.addView(button);
-            }
-            group.check(usingPreviewLink);
-            AlertDialog dlg=new AlertDialog.Builder(view.getContext())
-                    .setTitle(R.string.button_open_link)
-                    .setView(group)
-                    .setPositiveButton(android.R.string.ok,(dialogInterface, i) -> {
-                        usingPreviewLink=group.getCheckedRadioButtonId();
-                        preferences.edit().putInt("using_preview_link",usingPreviewLink).apply();
-                    })
-                    .setNegativeButton(android.R.string.cancel,null)
-                    .show();
-            return true;
         });
         buttonPrevious.setOnClickListener(view -> {
             if(editEmId.length()>0) {
                 int id = Integer.parseInt(editEmId.getText().toString());
-                if(navigateOnlyFavorite)
+                if(IsNavigateOnlyFavorite())
                     id=favoritesDB.FindPreviousID(id);
                 else
                     id = Math.max(0, id - 1);
@@ -195,32 +196,13 @@ public class MainActivity extends AppCompatActivity {
         buttonNext.setOnClickListener(view -> {
             if(editEmId.length()>0) {
                 int id = Integer.parseInt(editEmId.getText().toString());
-                if(navigateOnlyFavorite)
+                if(IsNavigateOnlyFavorite())
                     id=favoritesDB.FindNextID(id);
                 else
                     id = Math.min(Integer.MAX_VALUE, id + 1);
                 editEmId.setText(String.valueOf(id));
             }
         });
-        View.OnLongClickListener chooseOnlyFavoriteListener=view -> {
-            CheckBox boxOnlyFavorite=new CheckBox(view.getContext());
-            boxOnlyFavorite.setId(0);
-            boxOnlyFavorite.setText(R.string.check_navigate_only_favorite);
-            navigateOnlyFavorite=preferences.getBoolean("navigate_only_favorite",false);
-            boxOnlyFavorite.setChecked(navigateOnlyFavorite);
-            AlertDialog dlg=new AlertDialog.Builder(view.getContext())
-                    .setTitle(((Button)view).getText())
-                    .setView(boxOnlyFavorite)
-                    .setPositiveButton(android.R.string.ok,((dialogInterface, i) -> {
-                        navigateOnlyFavorite=boxOnlyFavorite.isChecked();
-                        preferences.edit().putBoolean("navigate_only_favorite",navigateOnlyFavorite).apply();
-                    }))
-                    .setNegativeButton(android.R.string.cancel,null)
-                    .show();
-            return true;
-        };
-        buttonPrevious.setOnLongClickListener(chooseOnlyFavoriteListener);
-        buttonNext.setOnLongClickListener(chooseOnlyFavoriteListener);
         editEmId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -257,9 +239,60 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{R.id.imageEmotionItem,R.id.textName});
         listAdapter.setViewBinder(emItemsViewBinder);
         gridEmList.setAdapter(listAdapter);
+        gridEmList.setOnItemClickListener(gridEmListCallback);
         LoadLastEmId();
         new UpdateChecker(this).CheckForUpdate(true);
     }
+
+    void ShowPreviewDialog(int listIndex){
+        try {
+            JSONArray md5Info = json.getJSONObject("data").getJSONArray("md5Info");
+            JSONObject singleInfo = md5Info.getJSONObject(listIndex);
+            String name = singleInfo.getString("name");
+            String md5 = singleInfo.getString("md5");
+            ImageView imageView=new ImageView(this);
+            imageView.setAdjustViewBounds(true);//这会使得图片可以扩展ImageView的边界
+            AlertDialog dlg=new AlertDialog.Builder(this)
+                    .setTitle(name)
+                    .setView(imageView)
+                    .setPositiveButton(android.R.string.ok,null)
+                    .show();
+            //加载网络图片时必须要有一个占位图
+            Object img=emItems.get(listIndex).get(EmotionItem.keyImg);
+            Drawable drawable;
+            if(img instanceof Drawable)
+                drawable=(Drawable)img;
+            else if(img instanceof Bitmap)
+                drawable=new BitmapDrawable((Bitmap)img);
+            else
+                drawable=getDrawable(R.drawable.ic_broken_image_red_24dp);
+            Glide.with(this).load(GetURLGif(md5)).placeholder(drawable).listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    if(e==null)
+                        ReportFail(true);
+                    else
+                        ReportException(e,true);
+                    dlg.dismiss();
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    return false;
+                }
+            }).into(imageView);
+        }catch (JSONException e){
+            ReportException(e,true);
+        }
+    }
+
+    private AdapterView.OnItemClickListener gridEmListCallback=new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            ShowPreviewDialog(i);
+        }
+    };
 
     SharedPreferences preferences;
 
@@ -385,11 +418,22 @@ public class MainActivity extends AppCompatActivity {
             "https://imgcache.qq.com/club/item/parcel/item/%s/%s/200x200.png",
             "https://imgcache.qq.com/club/item/parcel/item/%s/%s/126x126.png"
     };
+    static String GetURLGif(String strMD5){
+        return String.format("https://imgcache.qq.com/club/item/parcel/item/%s/%s/raw200.gif",strMD5.substring(0,2),strMD5);
+    }
 
     void GridDownloadImage(final int index, final int urlIndex, final String name, final String md5){
-        if(urlIndex>=urlsEm.length){
-            emItems.get(index).put(EmotionItem.keyImg,getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
-            return;
+        boolean previewGifOnMainView=IsPreviewGifOnMainView();
+        if(previewGifOnMainView) {
+            if(urlIndex>0) {
+                emItems.get(index).put(EmotionItem.keyImg, getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
+                return;
+            }
+        }else{
+            if (urlIndex >= urlsEm.length) {
+                emItems.get(index).put(EmotionItem.keyImg, getResources().getDrawable(R.drawable.ic_broken_image_red_24dp));
+                return;
+            }
         }
         EmotionItem item=emItems.get(index);
         item.task=new AndroidDownloadFileTask() {
@@ -409,7 +453,11 @@ public class MainActivity extends AppCompatActivity {
                 listAdapter.notifyDataSetChanged();
             }
         };
-        String url=String.format(urlsEm[urlIndex],md5.substring(0,2),md5);
+        String url;
+        if(previewGifOnMainView)
+            url=GetURLGif(md5);
+        else
+            url=String.format(urlsEm[urlIndex],md5.substring(0,2),md5);
         item.task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
     }
 

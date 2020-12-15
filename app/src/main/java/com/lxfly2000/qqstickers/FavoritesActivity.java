@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FavoritesActivity extends AppCompatActivity {
-    static final int REQUEST_CHOOSE=1;
     ListView listFavorites;
     SearchView searchView;
 

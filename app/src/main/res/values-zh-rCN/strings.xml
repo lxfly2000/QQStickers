@@ -32,4 +32,8 @@
     <string name="message_no_update">当前版本已是最新。</string>
     <string name="error_permission_network">未获取到联网权限，请修改权限设置。</string>
     <string name="check_navigate_only_favorite">仅浏览收藏</string>
+    <string name="menu_settings">设置</string>
+    <string name="label_preview_gif_main_view">在主界面中显示GIF</string>
+    <string name="message_settings_saved">设置已保存。</string>
+    <string name="button_open_file">打开文件</string>
 </resources>
