@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
             else if(img instanceof Bitmap)
                 drawable=new BitmapDrawable((Bitmap)img);
             else
-                drawable=getDrawable(R.drawable.ic_broken_image_red_24dp);
+                drawable=getResources().getDrawable(R.drawable.ic_broken_image_red_24dp);
             Glide.with(this).load(GetURLGif(md5)).placeholder(drawable).listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
