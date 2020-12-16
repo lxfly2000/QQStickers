@@ -6,7 +6,7 @@
 
     <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/imageEmotionItem"
+            android:layout_height="wrap_content" android:id="@+id/imageEmotionItem" android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_broken_image_red_24dp" android:contentDescription="@string/indicator_emtitle"/>
     <TextView
             android:text="@string/indicator_emtitle"

@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.lxfly2000.utilities.*;
@@ -439,7 +440,6 @@ public class MainActivity extends AppCompatActivity {
         item.task=new AndroidDownloadFileTask() {
             @Override
             public void OnReturnStream(ByteArrayInputStream stream, boolean success, int response, Object extra, URLConnection connection) {
-                EmotionItem item = emItems.get(index);
                 if (!success) {
                     GridDownloadImage(index, urlIndex + 1, name, md5);
                     return;
@@ -448,9 +448,21 @@ public class MainActivity extends AppCompatActivity {
                     GridDownloadImage(index, urlIndex + 1, name, md5);
                     return;
                 }
-                item.ReleaseImage();
-                item.put(EmotionItem.keyImg,BitmapFactory.decodeStream(stream));
-                listAdapter.notifyDataSetChanged();
+                if(IsPreviewGifOnMainView()){
+                    View gridItemLayout=gridEmList.getChildAt(index);
+                    if(gridItemLayout!=null){
+                        ImageView imageView=gridItemLayout.findViewById(R.id.imageEmotionItem);
+                        Glide.with(MainActivity.this)
+                                .load(GifDrawable.createFromStream(stream,"src"))
+                                .error(R.drawable.ic_broken_image_red_24dp)
+                                .into(imageView);
+                    }
+                }else {
+                    EmotionItem item = emItems.get(index);
+                    item.ReleaseImage();
+                    item.put(EmotionItem.keyImg, BitmapFactory.decodeStream(stream));
+                    listAdapter.notifyDataSetChanged();
+                }
             }
         };
         String url;

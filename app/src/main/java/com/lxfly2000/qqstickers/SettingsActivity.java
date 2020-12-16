@@ -47,8 +47,6 @@ public class SettingsActivity extends AppCompatActivity {
             enumLinkToOpen=findPreference(getString(R.string.key_link_to_open));
             checkNavigateFavoriteOnly=findPreference(getString(R.string.key_only_navigate_favorite));
             checkPreviewGifOnMainView=findPreference(getString(R.string.key_preview_gif_on_main_view));
-            checkPreviewGifOnMainView.setEnabled(false);
-            checkPreviewGifOnMainView.setSummary("This function is not implemented yet!");
             enumLinkToOpen.setOnPreferenceChangeListener(onChangeListener);
             checkNavigateFavoriteOnly.setOnPreferenceChangeListener(onChangeListener);
             checkPreviewGifOnMainView.setOnPreferenceChangeListener(onChangeListener);
