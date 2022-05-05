@@ -1,5 +1,4 @@
 # QQStickers
-[![Build Status](https://travis-ci.com/lxfly2000/QQStickers.svg?branch=master)](https://travis-ci.com/lxfly2000/QQStickers)
-![Android CI](https://github.com/lxfly2000/QQStickers/workflows/Android%20CI/badge.svg)
+[![Android CI](https://github.com/lxfly2000/QQStickers/actions/workflows/android.yml/badge.svg)](https://github.com/lxfly2000/QQStickers/actions/workflows/android.yml)
 
 QQ表情浏览器
